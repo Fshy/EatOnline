@@ -1,0 +1,62 @@
+<md-dialog flex=30>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Register</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="closeDialog()">
+          <i class="fa fa-times" aria-label="Close dialog"></i>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <form onsubmit="return registerUser();" action="users.php" method="post" id="registerForm" class="form-horizontal">
+        <fieldset>
+
+          <!-- Text input-->
+          <md-input-container class="md-block md-input-has-value">
+            <input ng-model="user.username" id="username" name="username" type="text" placeholder="Username" class="form-control input-md">
+          </md-input-container >
+
+          <!-- Text input-->
+          <md-input-container class="md-block md-input-has-value">
+            <input ng-model="user.password" id="password" name="password" type="password" placeholder="Password" class="form-control input-md">
+          </md-input-container >
+
+          <!-- Text input-->
+          <md-input-container class="md-block md-input-has-value">
+            <input ng-model="user.email" id="email" name="email" type="email" placeholder="Email" class="form-control input-md">
+          </md-input-container >
+
+          <!-- Text input-->
+          <md-input-container class="md-block md-input-has-value">
+            <input ng-model="user.name" id="name" name="name" type="text" placeholder="Name" class="form-control input-md">
+          </md-input-container >
+
+          <!-- Text input-->
+          <md-input-container class="md-block md-input-has-value">
+            <input ng-model="user.address" id="address" name="address" type="text" placeholder="Address" class="form-control input-md">
+          </md-input-container >
+
+          <!-- Text input-->
+          <md-input-container class="md-block md-input-has-value">
+            <input ng-model="user.tel" id="tel" name="tel" type="tel" placeholder="Telephone" class="form-control input-md">
+          </md-input-container >
+
+        </fieldset>
+        <md-dialog-actions layout="row">
+          <span flex></span>
+          <md-button ng-click="closeDialog()">
+            Cancel
+          </md-button>
+          <md-button id="btnRegister" type="submit" ng-click="closeDialog()">
+            Submit
+          </md-button>
+        </md-dialog-actions>
+        </form>
+      </div>
+    </md-dialog-content>
+
+
+</md-dialog>

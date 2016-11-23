@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Eat Online</title>
+		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="bower_components/sweetalert/dist/sweetalert.css">
+    <link rel="stylesheet" href="bower_components/material-design-lite/material.min.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+		<link rel="stylesheet" href="res/style.css">
+  </head>
+  <body ng-app="eatonline">
+
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+      <header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
+        <div class="mdl-layout__header-row">
+          <ul class="nav navbar-nav" ng-controller="dialogController">
+            {% if session.userid %}
+              <li><a>Logged in as {{session.username}}</a></li>
+              <li><a href="" onclick="logout()">Log Out</a></li>
+            {% else %}
+              <li><a href="" ng-click="login($event)">Log In</a></li>
+              <li><a href="" ng-click="register($event)">Register</a></li>
+            {% endif %}
+            <div class="mdl-layout-spacer"></div>
+          </ul>
+        </div>
+      </header>
+      <div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+        <header class="demo-drawer-header">
+          <span>Eat Online</span>
+        </header>
+        <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
+          <a class="mdl-navigation__link" href="#/"><i class="material-icons">home</i>Home</a>
+          <a class="mdl-navigation__link" href="#menu"><i class="material-icons">local_dining</i>Menu</a>
+          {% if (session.role == 'customer') or (session.role == 'dev') %}
+            <a class="mdl-navigation__link" href="#orders"><i class="material-icons">local_offer</i>My Orders</a>
+					{% endif %}
+          {% if (session.role == 'employee') or (session.role == 'dev') %}
+            <a class="mdl-navigation__link" href="#panel"><i class="material-icons">insert_chart</i>Employee Panel</a>
+          {% endif %}
+        </nav>
+      </div>
+
+      <main class="mdl-layout__content mdl-color--grey-100">
+        <div class="mdl-grid demo-content">
+					<div ng-view></div>
+				</div>
+			</main>
+		</div>
+		<script src="bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="bower_components/sweetalert/dist/sweetalert.min.js"></script>
+		<script src="bower_components/material-design-lite/material.min.js"></script>
+		<script src="bower_components/chart.js/dist/Chart.min.js"></script>
+		<script src="bower_components/angular/angular.min.js"></script>
+		<script src="bower_components/angular-route/angular-route.min.js"></script>
+		<script src="bower_components/angular-chart.js/angular-chart.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-material/angular-material.js"></script>
+		<script src="res/main.js"></script>
+	</body>
+</html>

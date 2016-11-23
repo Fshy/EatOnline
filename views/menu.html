@@ -1,0 +1,69 @@
+<div class="container">
+  <div class="row" style="padding:8px">
+    <div class="col-sm-8 mdl-color--white mdl-shadow--2dp">
+      <h3>Menu</h3>
+      <hr>
+      <table class="mdl-data-table mdl-js-data-table">
+        <thead>
+          <tr>
+            <th class="mdl-data-table__cell--non-numeric"></th>
+            <th class="mdl-data-table__cell--non-numeric">Item</th>
+            <th class="mdl-data-table__cell--non-numeric">Size</th>
+            <th>Price</th>
+            <th class="mdl-data-table__cell--non-numeric">Options</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in menu track by $index">
+              <td class="mdl-data-table__cell--non-numeric"><img ng-src="{{item.imgUrl}}" alt="" height="200px" width="200px"></td>
+              <td class="mdl-data-table__cell--non-numeric">{{item.name}}</td>
+              <td class="mdl-data-table__cell--non-numeric">{{item.size}}</td>
+              <td>{{item.price}}</td>
+              <td class="mdl-data-table__cell--non-numeric"><md-button>Add to Order</md-button></td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-sm-3 col-sm-offset-1 mdl-color--white mdl-shadow--2dp">
+      <h3>New Order</h3>
+      <hr>
+      <form ng-submit="save(ctry)" class="form-horizontal">
+      <fieldset>
+
+      <!-- Form Name -->
+      <legend>Form Name</legend>
+
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="country">Country</label>
+        <div class="col-md-4">
+        <input ng-model="ctry.name" id="country" name="country" type="text" placeholder="Country" class="form-control input-md">
+
+        </div>
+      </div>
+
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="population">Population</label>
+        <div class="col-md-4">
+        <input ng-model="ctry.population" id="population" name="population" type="text" placeholder="Population" class="form-control input-md">
+
+        </div>
+      </div>
+
+      <button id="saveCountry" name="saveCountry" class="btn btn-primary">Save Country</button>
+
+      </fieldset>
+      </form>
+
+
+      <table class="table table-striped">
+      	<tr ng-repeat="c in list">
+      		<td>{{c.name}}</td>
+      		<td>{{c.population}}</td>
+      	</tr>
+      </table>
+
+    </div>
+  </div>
+</div>
