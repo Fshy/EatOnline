@@ -15,6 +15,75 @@ $app->get('/', function (Request $request, Response $response) {
 	return $this->renderer->render($response, "/index.phtml", ['session' => $_SESSION]);
 });
 
+$app->post("/api/login", function(Request $request, Response $response){
+  $username = $_POST['username'];
+  $password = $_POST['password'];
+  $user = checkLogin($username, $password);
+  if ($user != NULL){
+      $msg = array("status"=>"success", "message"=>"Successfully authenticated as $username");
+      echo json_encode($msg);
+  }else{
+    $msg = array("status"=>"error", "message"=>"Incorrect username or password");
+    echo(json_encode($msg));
+  }
+});
+
+$app->post("/api/register", function(Request $request, Response $response){
+	$username = $_POST['username'];
+	$password = $_POST['password'];
+	$name = $_POST['name'];
+  $email = $_POST['email'];
+  $address = $_POST['address'];
+  $tel = $_POST['tel'];
+  if ($user = regUser($username, $password, $email, $name, $address, $tel, 'customer')){
+    $msg = array("status"=>"success", "message"=>"User successfully registered");
+    echo json_encode($msg);
+  }else{
+    $msg = array("status"=>"error", "message"=>"Unable to register user");
+    echo json_encode($smg);
+  }
+});
+
+$app->get("/api/placeorder", function(Request $request, Response $response){
+	if (isset($_SESSION["userid"])){
+    $userid = $_SESSION["userid"];
+    $orderid = newOrder($userid);
+    $msg = array("status"=>"success", "message"=>"Order Submitted", "id"=>$orderid);
+    echo json_encode($msg);
+  }else{
+    $msg = array("status"=>"error", "message"=>"Please login to place an order");
+    echo json_encode($msg);
+  }
+});
+
+$app->post("/api/placeorder", function(Request $request, Response $response){
+  if (isset($_SESSION["userid"])){
+    $userid = $_SESSION["userid"];
+    $orderid = $_POST["orderid"];
+    echo json_encode($orderid);
+    $foodid = $_POST["foodid"];
+    $quantity = $_POST["quantity"];
+    if ($res = addOrderItem($orderid, $foodid, $quantity)){//success
+      $msg = array("status"=>"success", "message"=>"Added to Order");
+      echo json_encode($msg);
+    }
+  }
+});
+
+$app->get("/api/logout", function(Request $request, Response $response){
+  if (session_destroy()) {
+    $msg = array("status"=>"success", "message"=>"Successfully logged out");
+    echo(json_encode($msg));
+  }else{
+    $msg = array("status"=>"error", "message"=>"Could not log out user");
+    echo(json_encode($msg));
+  }
+});
+
+$app->get("/api/menu", function(Request $request, Response $response){
+  echo(json_encode(getFoodItems()));
+});
+
 $app->get("/api/countries", function(Request $request, Response $response){
 	$countries = getAllCountries();
 

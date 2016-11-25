@@ -119,7 +119,7 @@ app.config(["$routeProvider",function($routeProvider) {
   $routeProvider
     .when("/", {
       templateUrl : "views/home.html",
-      controller: "mainController"
+      controller: "homeController"
     })
     .when("/menu", {
       templateUrl : "views/menu.html",
@@ -135,43 +135,75 @@ app.config(["$routeProvider",function($routeProvider) {
     });
 }]);
 
-app.controller('mainController', ['$scope', function($scope){
-    console.log("Main Controller Executed");
+app.controller('homeController', ['$scope', function($scope){
+    console.log("Home Controller Executed");
 }]);
 
 app.controller("menuController", ["$scope", function($scope){
     console.log("Menu Controller Executed");
-    $.get("menu.php?menu", function(res){
+
+    function orderItem (id, name, size, quantity, price) {
+      this.id = id;
+      this.name = name;
+      this.size = size;
+      this.quantity = quantity;
+      this.price = price;
+    }
+
+    var newOrder = [];
+    $scope.newOrder = newOrder;
+
+    $.get(base_url+"/menu", function(res){
         $scope.menu = res;
         $scope.$apply();
     }, "json");
+
+    $scope.addToOrder = function(id, name, size, price) {
+      swal({
+        title: "Add To Order",
+        text: "How many of this item would you like?",
+        type: "input",
+        input: "number",
+        showCancelButton: true,
+        closeOnConfirm: false,
+        confirmButtonColor: "#95AAB5",
+        inputPlaceholder: "Quantity"
+      },
+      function(inputValue){
+        if (inputValue === false) return false;
+        if (inputValue === "" || inputValue === "0" || $.isNumeric(inputValue)===false) {
+          swal.showInputError("Not a valid number for quantity!");
+          return false
+        }
+        $scope.newOrder.push(new orderItem(id, name, size, inputValue, price*inputValue));
+        $scope.$apply();
+        swal({title:"Success!", text:"Added "+inputValue+" "+name+" ("+size+") to Order: $"+price*inputValue, type:"success", confirmButtonColor: "#95AAB5"});
+      });
+    };
+
+    $scope.submitOrder = function(order){
+      var orderId;
+      if (order){
+        $.get(base_url+"/placeorder", function(res, orderId){
+          if (res.id){
+            orderId = res.id;
+            for (var i = 0; i < order.length; i++) {
+              $.post(base_url+"/placeorder", {orderid:orderId, foodid:order[i].id, quantity:order[i].quantity});
+            }
+            swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5"});
+          }
+          swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5"});
+        },"json");
+      }
+    };
 }]);
 
-app.controller("countryController", ["$scope", function($scope){
-    var countryList = [];
-    countryList.push({
-        "name": "Grenada",
-        "population": 109590
-    });
-    countryList.push({
-        "name": "St. Vincent and the Grenadines",
-        "population": 109991
-    });
-    countryList.push({
-        "name": "Trinidad and Tobago",
-        "population": 1328019
-    });
+app.controller('orderController', ['$scope', function($scope){
+    console.log("Order Controller Executed");
+}]);
 
-    $scope.list = countryList;
-
-    $scope.save = function(ctry) {
-        console.log(ctry);
-        $scope.list.push({
-            name: ctry.name,
-            population: ctry.population
-        });
-        swal("Save Country", "", "success");
-    }
+app.controller('panelController', ['$scope', function($scope){
+    console.log("Panel Controller Executed");
 }]);
 
 app.controller('dialogController', function ($scope, $mdDialog) {
@@ -211,8 +243,8 @@ app.controller('dialogController', function ($scope, $mdDialog) {
 });
 
 function checkLogin(){
-    $.post("users.php", $("#loginForm").serialize(), function(res){
-        swal({title:"", text: res.message, type: res.status, confirmButtonColor: "#37474f", timer: 1200, showConfirmButton: false},
+    $.post(base_url+"/login", $("#loginForm").serialize(), function(res){
+        swal({title:"", text: res.message, type: res.status, confirmButtonColor: "#95AAB5", timer: 1200, showConfirmButton: false},
          function(){
            location.reload();
          }
@@ -222,8 +254,8 @@ function checkLogin(){
 }
 
 function registerUser(){
-    $.post("users.php", $("#registerForm").serialize(), function(res){
-        swal({title:"", text: res.message, type: res.status, confirmButtonColor: "#37474f", timer: 1200, showConfirmButton: false},
+    $.post(base_url+"/register", $("#registerForm").serialize(), function(res){
+        swal({title:"", text: res.message, type: res.status, confirmButtonColor: "#95AAB5", timer: 1200, showConfirmButton: false},
          function(){
            location.reload();
          }
@@ -233,23 +265,24 @@ function registerUser(){
 }
 
 function logout(){
-  swal({  title: "",
-          text: "Are you sure you want to log out?",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#37474f",
-          confirmButtonText: "Log Out",
-          closeOnConfirm: false },
-          function(){
-            $.get("users.php?logout", function(res){
-                swal({title:"", text: res.message, type: res.status, timer: 1200, showConfirmButton: false},
-                 function(){
-                   location.reload();
-                 }
-                );
-            }, "json");
-            return false;
-          });
+  swal({
+    title: "",
+    text: "Are you sure you want to log out?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#95AAB5",
+    confirmButtonText: "Log Out",
+    closeOnConfirm: false },
+    function(){
+      $.get(base_url+"/logout", function(res){
+          swal({title:"", text: res.message, type: res.status, timer: 1200, showConfirmButton: false},
+           function(){
+             location.reload();
+           }
+          );
+      }, "json");
+      return false;
+    });
 }
 
 console.log("JavaScript file was successfully loaded in the page");

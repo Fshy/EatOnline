@@ -1,9 +1,9 @@
 <div class="container">
   <div class="row" style="padding:8px">
-    <div class="col-sm-8 mdl-color--white mdl-shadow--2dp">
+    <div class="col-md-8 mdl-color--white mdl-shadow--2dp">
       <h3>Menu</h3>
       <hr>
-      <table class="mdl-data-table mdl-js-data-table">
+      <table class="table">
         <thead>
           <tr>
             <th class="mdl-data-table__cell--non-numeric"></th>
@@ -19,51 +19,39 @@
               <td class="mdl-data-table__cell--non-numeric">{{item.name}}</td>
               <td class="mdl-data-table__cell--non-numeric">{{item.size}}</td>
               <td>{{item.price}}</td>
-              <td class="mdl-data-table__cell--non-numeric"><md-button>Add to Order</md-button></td>
+              <td class="mdl-data-table__cell--non-numeric"><md-button ng-click="addToOrder(item.id, item.name, item.size, item.price)" class="md-raised md-button md-ink-ripple"><md-icon><i class="material-icons">add</i></md-icon> Add to Order</md-button></td>
             </tr>
         </tbody>
       </table>
     </div>
-    <div class="col-sm-3 col-sm-offset-1 mdl-color--white mdl-shadow--2dp">
+    <div class="col-md-3 col-md-offset-1 mdl-color--white mdl-shadow--2dp">
       <h3>New Order</h3>
       <hr>
-      <form ng-submit="save(ctry)" class="form-horizontal">
-      <fieldset>
-
-      <!-- Form Name -->
-      <legend>Form Name</legend>
-
-      <!-- Text input-->
-      <div class="form-group">
-        <label class="col-md-4 control-label" for="country">Country</label>
-        <div class="col-md-4">
-        <input ng-model="ctry.name" id="country" name="country" type="text" placeholder="Country" class="form-control input-md">
-
-        </div>
-      </div>
-
-      <!-- Text input-->
-      <div class="form-group">
-        <label class="col-md-4 control-label" for="population">Population</label>
-        <div class="col-md-4">
-        <input ng-model="ctry.population" id="population" name="population" type="text" placeholder="Population" class="form-control input-md">
-
-        </div>
-      </div>
-
-      <button id="saveCountry" name="saveCountry" class="btn btn-primary">Save Country</button>
-
-      </fieldset>
-      </form>
-
-
-      <table class="table table-striped">
-      	<tr ng-repeat="c in list">
-      		<td>{{c.name}}</td>
-      		<td>{{c.population}}</td>
-      	</tr>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Size</th>
+            <th>Quantity</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+      	<tbody ng-init="total = 0">
+          <tr ng-repeat="o in newOrder">
+            <!-- <td>{{o.id}}</td> -->
+        		<td>{{o.name}}</td>
+            <td>{{o.size}}</td>
+            <td>{{o.quantity}}</td>
+            <td ng-init="$parent.total = $parent.total + o.price">{{o.price | currency:"$"}}</td>
+      	 </tr>
+        </tbody>
       </table>
-
+        <hr>
+        <strong><div>Order Total: {{total | currency:"$"}}</div></strong>
+        <hr>
+        <div style="padding-bottom:15px">
+          <md-button ng-click="submitOrder(newOrder)" class="md-raised md-button md-ink-ripple md-primary">Submit Order</md-button>
+        </div>
     </div>
   </div>
 </div>
