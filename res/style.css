@@ -255,3 +255,34 @@ _:-ms-input-placeholder, :root .demo-graph {
   -webkit-border-radius: 3px;
   border-radius: 3px;
 }
+
+.slide.ng-enter, .slide.ng-leave {
+  -webkit-transition: 250ms cubic-bezier(0.455, 0.030, 0.515, 0.955) all;
+  -moz-transition: 250ms cubic-bezier(0.455, 0.030, 0.515, 0.955) all;
+  -ms-transition: 250ms cubic-bezier(0.455, 0.030, 0.515, 0.955) all;
+  -o-transition: 250ms cubic-bezier(0.455, 0.030, 0.515, 0.955) all;
+  transition: 250ms cubic-bezier(0.455, 0.030, 0.515, 0.955) all;
+  position: relative;
+  display:table-row;
+}
+
+.slide.ng-enter {
+  opacity: 0;
+  height: 0px;
+  color: green;
+} /* starting animations for enter */
+.slide.ng-enter-active {
+  opacity: 1;
+  height:auto;
+  color: black;
+} /* terminal animations for enter */
+.slide.ng-leave {
+  opacity: 1;
+  height: auto;
+  color: black;
+} /* starting animations for leave */
+.slide.ng-leave-active {
+  opacity: 0;
+  height: 0px;
+  color: red;
+} /* terminal animations for leave */

@@ -10,11 +10,11 @@
             <th class="mdl-data-table__cell--non-numeric">Item</th>
             <th class="mdl-data-table__cell--non-numeric">Size</th>
             <th>Price</th>
-            <th class="mdl-data-table__cell--non-numeric">Options</th>
+            <th class="mdl-data-table__cell--non-numeric"></th>
           </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="item in menu track by $index">
+            <tr ng-repeat="item in menu track by $index" class="slide">
               <td class="mdl-data-table__cell--non-numeric"><img ng-src="{{item.imgUrl}}" alt="" height="200px" width="200px"></td>
               <td class="mdl-data-table__cell--non-numeric">{{item.name}}</td>
               <td class="mdl-data-table__cell--non-numeric">{{item.size}}</td>
@@ -27,25 +27,27 @@
     <div class="col-md-3 col-md-offset-1 mdl-color--white mdl-shadow--2dp">
       <h3>New Order</h3>
       <hr>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Size</th>
-            <th>Quantity</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-      	<tbody ng-init="total = 0">
-          <tr ng-repeat="o in newOrder">
-            <!-- <td>{{o.id}}</td> -->
-        		<td>{{o.name}}</td>
-            <td>{{o.size}}</td>
-            <td>{{o.quantity}}</td>
-            <td ng-init="$parent.total = $parent.total + o.price">{{o.price | currency:"$"}}</td>
-      	 </tr>
-        </tbody>
-      </table>
+      <div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Size</th>
+              <th>Quantity</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+        	<tbody ng-init="total = 0">
+            <tr ng-repeat="o in newOrder" class="slide">
+          		<td>{{o.name}}</td>
+              <td>{{o.size}}</td>
+              <td>{{o.quantity}}</td>
+              <td ng-init="$parent.total = $parent.total + o.price">{{o.price | currency:"$"}}</td>
+              <td ng-click="delete($index, o, $parent)"><i class="material-icons">clear</i></td>
+        	 </tr>
+          </tbody>
+        </table>
+      </div>
         <hr>
         <strong><div>Order Total: {{total | currency:"$"}}</div></strong>
         <hr>

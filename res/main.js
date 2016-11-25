@@ -113,7 +113,7 @@ function saveCartItem(){
 
 
 // Angular App
-var app = angular.module("eatonline", ['ngRoute', 'ngMaterial']);
+var app = angular.module("eatonline", ['ngRoute', 'ngMaterial', 'ngAnimate']);
 
 app.config(["$routeProvider",function($routeProvider) {
   $routeProvider
@@ -196,10 +196,46 @@ app.controller("menuController", ["$scope", function($scope){
         },"json");
       }
     };
+
+    $scope.delete = function(index, o, parent) {
+      $scope.newOrder.splice(index, 1);
+      parent.total -= o.price;
+    };
 }]);
 
 app.controller('orderController', ['$scope', function($scope){
     console.log("Order Controller Executed");
+
+    var orderids = [];
+    var singleOrder = [];
+    var allOrders = [];
+    // $scope.singleOrder = singleOrder;
+    $scope.allOrders = allOrders;
+
+    function orderItem (id, name, size, quantity, price) {
+      this.id = id;
+      this.name = name;
+      this.size = size;
+      this.quantity = quantity;
+      this.price = price;
+    }
+
+    function singleOrder (orderid, arrayOfItems) {
+      this.id = orderid;
+      this.items = arrayOfItems;
+    }
+
+    $.get(base_url+"/order", function(res){
+      for (var i = 0; i < res.length; i++) {
+        orderids.push(res[i].id);
+      }
+      console.log("orderids: "+orderids);
+      orderids.forEach(function(){
+        $.get(base_url+"/order/"+orderids, function(res){
+          console.log(res);
+        }, "json");
+      });
+    }, "json");
 }]);
 
 app.controller('panelController', ['$scope', function($scope){
