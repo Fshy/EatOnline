@@ -1,33 +1,33 @@
 <div class="container">
   <div class="row" style="padding:8px">
-    <div class="col-sm-12 mdl-color--white mdl-shadow--2dp"  style="padding-bottom:35px">
-      <h3>My Active Orders</h3>
+    <div class="col-sm-12"  style="padding-bottom:35px">
+      <h3>My Pending Orders</h3>
       <hr>
-      <div class="col-sm-4 mdl-color--white mdl-shadow--2dp">
-        <h3>Order #{{id}}</h3>
-        <hr>
-        <div>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Size</th>
-                <th>Quantity</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody ng-init="total = 0">
-              <tr ng-repeat="o in newOrder" class="slide">
-                <td>{{o.name}}</td>
-                <td>{{o.size}}</td>
-                <td>{{o.quantity}}</td>
-                <td ng-init="$parent.total = $parent.total + o.price">{{o.price | currency:"$"}}</td>
-             </tr>
-            </tbody>
-          </table>
-        </div>
+      <div ng-repeat="order in orderDetails" ng-class="{ 'row': ($index + 1) % 2 == 0 }" class="slide">
+        <div style="padding-bottom:15px;margin-top: 25px;" class="col-sm-4 col-sm-offset-1 mdl-color--white mdl-shadow--2dp">
+          <h4 ng-repeat="o in order | unique:'order_id'">Order #{{o.order_id}}</h4>
           <hr>
-          <strong><div>Order Total: {{total | currency:"$"}}</div></strong>
+          <div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Size</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="o in order">
+                  <td>{{o.name}}</td>
+                  <td>{{o.size}}</td>
+                  <td>{{o.quantity}}</td>
+                  <td>{{o.totalprice | currency:"$"}}</td>
+               </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>

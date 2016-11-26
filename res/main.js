@@ -1,119 +1,15 @@
 "use strict";
-console.log("hello I'm connected to the world");
+console.log("Loading main.js");
 
 var base_url = "index.php/api";
 
 $(document).ready(function(){
-    console.log("All Elements in the Page was successfully loaded, we can begin our application logic");
-    retrieveCountries();
-    retrieveProducts();
+    console.log("Document Loaded");
 });
-
-function retrieveCountries(){
-    console.log("Attempting to retrieve all countries from the database via AJAX");
-    $.get(base_url+ "/countries", processAllCountries, "json"); // When AJAX request is completed successfully, the proccessAllCountries function will be executed with the data as a parameter
-}
-
-function processAllCountries(records){
-    if ($("#country").length > 0){ // the country select is available so we can display all countries
-        records.forEach(function(country){
-            var htmlStr = "<option value='"+country.id+"'>"+country.name+"</option>";
-            $("#country").append(htmlStr);
-        })
-    }
-}
-
-function retrieveProducts(){
-    $.get(base_url + "/products", processAllProducts, "json");
-}
-
-function processAllProducts(records){
-    console.log(records);
-    createTable(records)
-}
-
-function createTable(records){
-    var key;
-    var sec_id = "#table_sec";
-    var htmlStr = $("#table_heading").html(); //Includes all the table, thead and tbody declarations
-
-    records.forEach(function(el){
-        htmlStr += "<tr>";
-        htmlStr += "<td>" + el['name'] + "</td>";
-        htmlStr += "<td>" + el['price'] + "</td>";
-        htmlStr += "<td>"+ el['country'] +"</td>";
-        htmlStr += "<td><button class='btn btn-primary' onclick=\"display("+el.id+")\"><i class='fa fa-eye' aria-hidden='true'></i></button> ";
-        htmlStr += "<button class='btn btn-success' onclick=\"addCart("+el.id+")\"><i class='fa fa-cart-plus' aria-hidden='true'></i></button> ";
-        htmlStr += "<button class='btn btn-danger' onclick=\"display("+el.id+")\"><i class='fa fa-trash' aria-hidden='true'></i></button></td>";
-        htmlStr +=" </tr>" ;
-    });
-
-    htmlStr += "</tbody></table>";
-    $(sec_id).html(htmlStr);
-}
-
-function display(el){
-    $.get(base_url + "/products/"+el, displayInfo, "json");
-}
-
-function displayInfo(rec){
-     swal(rec.name);
-}
-
-function displayError(rec){
-  swal("My Products", "Error Occurrec", "error");
-}
-
-function saveProduct(){
-    // #name is the element with id='name'
-    var name = $("#name").val(); // .val() will retrieve information stored in the input
-    var country = $("#country").val();
-    var price = $("#price").val();
-    var data = {
-        'name' : name,
-        'country': country,
-        'price' : price
-    };
-    $.post(base_url + "/products",data, function(res){
-        console.log(res);
-        if (res.id && res.id > 0)swal("Record", "Record Saved", "success");
-        else swal("Record", "Unable to save record", "error");
-        retrieveProducts();// Display results
-        clearFields(); // Reset Form
-    }, "json");
-    return false;
-}
-
-function clearFields(){
-    $("#name").val("");
-    $("#country").val(0);
-    $("#price").val("");
-}
-
-function addCart(productId){
-    $("#cart_form").show("slow");
-    $.get(base_url + "/products/"+productId, function(product){
-        $("#productId").val(product.id);
-        $("#productPrice").val(product.price);
-        $("#productName").val(product.name);
-    }, "json");
-}
-
-function saveCartItem(){
-    var data = {};
-    // data.id = $("#productId").val();
-    data.quantity = $("#quantity").val();
-    if (data.quantity > 0){
-        return true;
-    }else{
-        swal("Cart", "Must select Value greater than 0", "error");
-        return false;
-    }
-}
 
 
 // Angular App
-var app = angular.module("eatonline", ['ngRoute', 'ngMaterial', 'ngAnimate']);
+var app = angular.module("eatonline", ['ngRoute', 'ngMaterial', 'ngAnimate', 'ui.unique']);
 
 app.config(["$routeProvider",function($routeProvider) {
   $routeProvider
@@ -167,7 +63,8 @@ app.controller("menuController", ["$scope", function($scope){
         showCancelButton: true,
         closeOnConfirm: false,
         confirmButtonColor: "#95AAB5",
-        inputPlaceholder: "Quantity"
+        inputPlaceholder: "Quantity",
+        allowOutsideClick: true
       },
       function(inputValue){
         if (inputValue === false) return false;
@@ -177,7 +74,7 @@ app.controller("menuController", ["$scope", function($scope){
         }
         $scope.newOrder.push(new orderItem(id, name, size, inputValue, price*inputValue));
         $scope.$apply();
-        swal({title:"Success!", text:"Added "+inputValue+" "+name+" ("+size+") to Order: $"+price*inputValue, type:"success", confirmButtonColor: "#95AAB5"});
+        swal({title:"Success!", text:"Added "+inputValue+" "+name+" ("+size+") to Order: $"+price*inputValue, type:"success", confirmButtonColor: "#95AAB5", allowOutsideClick: true});
       });
     };
 
@@ -190,9 +87,9 @@ app.controller("menuController", ["$scope", function($scope){
             for (var i = 0; i < order.length; i++) {
               $.post(base_url+"/placeorder", {orderid:orderId, foodid:order[i].id, quantity:order[i].quantity});
             }
-            swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5"});
+            swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5", allowOutsideClick: true});
           }
-          swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5"});
+          swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5", allowOutsideClick: true});
         },"json");
       }
     };
@@ -206,36 +103,21 @@ app.controller("menuController", ["$scope", function($scope){
 app.controller('orderController', ['$scope', function($scope){
     console.log("Order Controller Executed");
 
-    var orderids = [];
-    var singleOrder = [];
-    var allOrders = [];
-    // $scope.singleOrder = singleOrder;
-    $scope.allOrders = allOrders;
+    var orderDetails = []; // Holds array of items for each orderid
+    var orderIds = [];
+    $scope.orderDetails = orderDetails;
+    $scope.orderIds = orderIds;
 
-    function orderItem (id, name, size, quantity, price) {
-      this.id = id;
-      this.name = name;
-      this.size = size;
-      this.quantity = quantity;
-      this.price = price;
-    }
+    $scope.$on('$routeChangeSuccess', function () {
+      $.get(base_url+"/order", function(res){
+        $scope.orderDetails = res;
+        $scope.$apply();
+        for (var i = 0; i < $scope.orderDetails.length; i++) {
+          $scope.orderIds.push($scope.orderDetails[i][0].order_id);
+        }
+      }, "json");
+    });
 
-    function singleOrder (orderid, arrayOfItems) {
-      this.id = orderid;
-      this.items = arrayOfItems;
-    }
-
-    $.get(base_url+"/order", function(res){
-      for (var i = 0; i < res.length; i++) {
-        orderids.push(res[i].id);
-      }
-      console.log("orderids: "+orderids);
-      orderids.forEach(function(){
-        $.get(base_url+"/order/"+orderids, function(res){
-          console.log(res);
-        }, "json");
-      });
-    }, "json");
 }]);
 
 app.controller('panelController', ['$scope', function($scope){
@@ -308,7 +190,8 @@ function logout(){
     showCancelButton: true,
     confirmButtonColor: "#95AAB5",
     confirmButtonText: "Log Out",
-    closeOnConfirm: false },
+    closeOnConfirm: false,
+    allowOutsideClick: true },
     function(){
       $.get(base_url+"/logout", function(res){
           swal({title:"", text: res.message, type: res.status, timer: 1200, showConfirmButton: false},

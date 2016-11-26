@@ -85,13 +85,13 @@ $app->get("/api/menu", function(Request $request, Response $response){
 });
 
 $app->get("/api/order", function(Request $request, Response $response){
-  echo(json_encode(getOrderId($_SESSION["userid"])));
+  echo(json_encode(getOrderDetails($_SESSION["userid"])));
 });
 
-$app->get("/api/order/{id}", function(Request $request, Response $response){
-	$orderid = $request->getAttribute('id');
-  echo(json_encode(getOrderDetails($orderid)));
-});
+// $app->get("/api/order/{id}", function(Request $request, Response $response){
+// 	$orderid = $request->getAttribute('id');
+//   echo(json_encode(getOrderDetails($orderid)));
+// });
 
 $app->get("/api/countries", function(Request $request, Response $response){
 	$countries = getAllCountries();

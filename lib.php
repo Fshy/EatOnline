@@ -67,9 +67,16 @@ function getOrderId($customerid){
 }
 
 // Gets details for a given order
-function getOrderDetails($orderid){
-	$sql = "SELECT f.name, i.quantity, f.size, f.price AS itemprice, f.price*i.quantity as totalprice FROM food_items f, order_items i, orders o WHERE i.order_id='$orderid' AND i.order_id=o.id AND i.food_items_id=f.id;";
-	return selectQuery($sql);
+function getOrderDetails($customerid){
+	$res = getOrderId($customerid);
+	// return $res;
+	$orders = [];
+	foreach ($res as $orderid) {
+		$oID = $orderid["id"];
+		$sql = "SELECT i.order_id, f.name, i.quantity, f.size, f.price AS itemprice, f.price*i.quantity as totalprice FROM food_items f, order_items i, orders o WHERE i.order_id='$oID' AND i.order_id=o.id AND i.food_items_id=f.id;";
+		$orders[] = selectQuery($sql);
+	}
+	return $orders;
 }
 
 // Create a new order for a given user
