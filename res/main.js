@@ -32,12 +32,10 @@ app.config(["$routeProvider",function($routeProvider) {
 }]);
 
 app.controller('homeController', ['$scope', function($scope){
-    console.log("Home Controller Executed");
+  // Stuff Maybe
 }]);
 
-app.controller("menuController", ["$scope", function($scope){
-    console.log("Menu Controller Executed");
-
+app.controller("menuController", ["$scope", "$window", function($scope, $window){
     function orderItem (id, name, size, quantity, price) {
       this.id = id;
       this.name = name;
@@ -89,7 +87,10 @@ app.controller("menuController", ["$scope", function($scope){
             }
             swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5", allowOutsideClick: true});
           }
-          swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5", allowOutsideClick: true});
+          swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5", allowOutsideClick: true},
+           function(){
+             $window.location.href = '#orders';
+           });
         },"json");
       }
     };
@@ -101,8 +102,6 @@ app.controller("menuController", ["$scope", function($scope){
 }]);
 
 app.controller('orderController', ['$scope', function($scope){
-    console.log("Order Controller Executed");
-
     var orderDetails = []; // Holds array of items for each orderid
     var orderIds = [];
     $scope.orderDetails = orderDetails;
@@ -121,8 +120,6 @@ app.controller('orderController', ['$scope', function($scope){
 }]);
 
 app.controller('panelController', ['$scope', function($scope){
-    console.log("Panel Controller Executed");
-
     var orderDetails = []; // Holds array of items for each orderid
     var orderIds = [];
     $scope.orderDetails = orderDetails;

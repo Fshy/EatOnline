@@ -18,7 +18,7 @@
               <td class="mdl-data-table__cell--non-numeric"><img ng-src="{{item.imgUrl}}" alt="" height="200px" width="200px"></td>
               <td class="mdl-data-table__cell--non-numeric">{{item.name}}</td>
               <td class="mdl-data-table__cell--non-numeric">{{item.size}}</td>
-              <td>{{item.price}}</td>
+              <td>{{item.price | currency:"$"}}</td>
               <td class="mdl-data-table__cell--non-numeric"><md-button ng-click="addToOrder(item.id, item.name, item.size, item.price)" class="md-raised md-button md-ink-ripple"><md-icon><i class="material-icons">add</i></md-icon> Add to Order</md-button></td>
             </tr>
         </tbody>

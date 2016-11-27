@@ -12,8 +12,6 @@ function getDBConnection(){
 
 }
 
-getDBConnection();
-
 // Generic Function - returns an array of objects from select query
 function selectQuery($sql){
   $arr = [];
@@ -105,39 +103,41 @@ function addOrderItem($orderid, $foodid, $quantity){
 
 // Check Login Credentials
 function checkLogin($username, $password){
-    $password = sha1($password);
-    $sql = "SELECT * FROM users where username='$username'";
-    $db = getDBConnection();
-    if ($db != NULL){
-        $res = $db->query($sql);
-        if($res && $row = $res->fetch_assoc()) // If the result is value and we retrieved a record
-            if ($row['password'] == $password){
-							$_SESSION['userid'] = $row['id'];
-							$_SESSION['username'] = $row['username'];
-							$_SESSION['role'] = $row['role'];
-							return $row;
-						}
-    }
-    return NULL;
+  $password = sha1($password);
+  $sql = "SELECT * FROM users where username='$username'";
+  $db = getDBConnection();
+  if ($db != NULL){
+    $res = $db->query($sql);
+    if($res && $row = $res->fetch_assoc()) // If the result is value and we retrieved a record
+	    if ($row['password'] == $password){
+				$_SESSION['userid'] = $row['id'];
+				$_SESSION['username'] = $row['username'];
+				$_SESSION['role'] = $row['role'];
+				return $row;
+			}
+  }
+  return NULL;
 }
 
 // Register a new user
 function regUser($username, $password, $email, $name, $address, $tel, $role){
-    $password = sha1($password);
-    $sql = "INSERT users(`username`, `password`, `email`, `name`, `address`, `tel`, `role`) VALUES ('$username', '$password', '$email', '$name', '$address', '$tel', '$role')";
-    try{
-        $db = getDBConnection();
-        if ($db != NULL) { // If we are connected
-            $db->query($sql);
-            $id = $db->insert_id;
-            $db->close();
-            if ($id > 0){
-							$_SESSION['userid'] = $id;
-							$_SESSION['username'] = $username;
-							$_SESSION['role'] = $role;
-							return TRUE;
-						}
-        }
-    }catch (Exception $e) {}
-    return FALSE;
+  $password = sha1($password);
+  $sql = "INSERT users(`username`, `password`, `email`, `name`, `address`, `tel`, `role`) VALUES ('$username', '$password', '$email', '$name', '$address', '$tel', '$role')";
+  try{
+      $db = getDBConnection();
+      if ($db != NULL) { // If we are connected
+        $db->query($sql);
+        $id = $db->insert_id;
+        $db->close();
+        if ($id > 0){
+					$_SESSION['userid'] = $id;
+					$_SESSION['username'] = $username;
+					$_SESSION['role'] = $role;
+					return TRUE;
+				}
+      }
+  }catch (Exception $e) {
+		// TODO: Exception Handling
+	}
+  return FALSE;
 }
