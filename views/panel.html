@@ -12,10 +12,17 @@
           <i class="material-icons" style="top:20px;right:15px;position:absolute;" ng-click="showMenu(o.order_id)">settings</i>
         </div>
         <hr>
-        <p ng-repeat="o in order | unique:'order_id'">Customer Name: {{o.custName}}</p>
-        <p ng-repeat="o in order | unique:'order_id'">Address: {{o.address}}</p>
-        <p ng-repeat="o in order | unique:'order_id'">Telephone: {{o.tel}}</p>
-        <p ng-repeat="o in order | unique:'order_id'">Time: {{o.time}}</p>
+
+        <dl class="dl-horizontal" ng-repeat="o in order | unique:'order_id'">
+          <dt>Customer Name:</dt>
+          <dd>{{o.custName}}</dd>
+          <dt>Address:</dt>
+          <dd>{{o.address}}</dd>
+          <dt>Telephone:</dt>
+          <dd>{{o.tel}}</dd>
+          <dt>Time:</dt>
+          <dd>{{o.time}}</dd>
+        </dl>
 
         <hr>
         <div>
@@ -44,7 +51,7 @@
   </div>
 
   <div class="row" style="padding:8px">
-    <div class="col-sm-12 mdl-color--white mdl-shadow--2dp">
+    <div class="col-sm-12">
       <h3>Data Visualization</h3>
       <hr>
     </div>

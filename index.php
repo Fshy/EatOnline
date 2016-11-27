@@ -16,31 +16,37 @@ $app->get('/', function (Request $request, Response $response) {
 });
 
 $app->post("/api/login", function(Request $request, Response $response){
-  $username = $_POST['username'];
-  $password = $_POST['password'];
+	$post = $request->getParsedBody();
+  $username = $post['username'];
+  $password = $post['password'];
   $user = checkLogin($username, $password);
   if ($user != NULL){
-      $msg = array("status"=>"success", "message"=>"Successfully authenticated as $username");
-      echo json_encode($msg);
+    $msg = array("status"=>"success", "message"=>"Successfully authenticated as $username");
+		$response = $response->withJson($msg);
+		return $response;
   }else{
     $msg = array("status"=>"error", "message"=>"Incorrect username or password");
-    echo(json_encode($msg));
+		$response = $response->withJson($msg);
+		return $response;
   }
 });
 
 $app->post("/api/register", function(Request $request, Response $response){
-	$username = $_POST['username'];
-	$password = $_POST['password'];
-	$name = $_POST['name'];
-  $email = $_POST['email'];
-  $address = $_POST['address'];
-  $tel = $_POST['tel'];
+	$post = $request->getParsedBody();
+	$username = $post['username'];
+	$password = $post['password'];
+	$name = $post['name'];
+  $email = $post['email'];
+  $address = $post['address'];
+  $tel = $post['tel'];
   if ($user = regUser($username, $password, $email, $name, $address, $tel, 'customer')){
     $msg = array("status"=>"success", "message"=>"User successfully registered");
-    echo json_encode($msg);
+		$response = $response->withJson($msg);
+		return $response;
   }else{
     $msg = array("status"=>"error", "message"=>"Unable to register user");
-    echo json_encode($smg);
+		$response = $response->withJson($msg);
+		return $response;
   }
 });
 
@@ -49,23 +55,27 @@ $app->get("/api/placeorder", function(Request $request, Response $response){
     $userid = $_SESSION["userid"];
     $orderid = newOrder($userid);
     $msg = array("status"=>"success", "message"=>"Order Submitted", "id"=>$orderid);
-    echo json_encode($msg);
+		$response = $response->withJson($msg);
+		return $response;
   }else{
     $msg = array("status"=>"error", "message"=>"Please login to place an order");
-    echo json_encode($msg);
+		$response = $response->withJson($msg);
+		return $response;
   }
 });
 
 $app->post("/api/placeorder", function(Request $request, Response $response){
+	$post = $request->getParsedBody();
   if (isset($_SESSION["userid"])){
     $userid = $_SESSION["userid"];
-    $orderid = $_POST["orderid"];
-    echo json_encode($orderid);
-    $foodid = $_POST["foodid"];
-    $quantity = $_POST["quantity"];
+    $orderid = $post["orderid"];
+    // echo json_encode($orderid);
+    $foodid = $post["foodid"];
+    $quantity = $post["quantity"];
     if ($res = addOrderItem($orderid, $foodid, $quantity)){//success
       $msg = array("status"=>"success", "message"=>"Added to Order");
-      echo json_encode($msg);
+			$response = $response->withJson($msg);
+			return $response;
     }
   }
 });
@@ -73,41 +83,30 @@ $app->post("/api/placeorder", function(Request $request, Response $response){
 $app->get("/api/logout", function(Request $request, Response $response){
   if (session_destroy()) {
     $msg = array("status"=>"success", "message"=>"Successfully logged out");
-    echo(json_encode($msg));
+		$response = $response->withJson($msg);
+		return $response;
   }else{
     $msg = array("status"=>"error", "message"=>"Could not log out user");
-    echo(json_encode($msg));
+		$response = $response->withJson($msg);
+		return $response;
   }
 });
 
 $app->get("/api/menu", function(Request $request, Response $response){
-  echo(json_encode(getFoodItems()));
-});
-
-$app->get("/api/myorders", function(Request $request, Response $response){
-  echo(json_encode(getOrderDetails($_SESSION["userid"])));
-});
-
-$app->get("/api/openorders", function(Request $request, Response $response){
-  echo(json_encode(getOpenOrders()));
-});
-
-// $app->get("/api/order/{id}", function(Request $request, Response $response){
-// 	$orderid = $request->getAttribute('id');
-//   echo(json_encode(getOrderDetails($orderid)));
-// });
-
-$app->get("/api/countries", function(Request $request, Response $response){
-	$countries = getAllCountries();
-
-	$response = $response->withJson($countries);
+  $fooditems = getFoodItems();
+	$response = $response->withJson($fooditems);
 	return $response;
 });
 
-$app->get("/api/products", function(Request $request, Response $response){
-	$products = getAllProducts();
+$app->get("/api/myorders", function(Request $request, Response $response){
+	$userOrders = getOrderDetails($_SESSION["userid"]);
+	$response = $response->withJson($userOrders);
+	return $response;
+});
 
-	$response = $response->withJson($products);
+$app->get("/api/openorders", function(Request $request, Response $response){
+	$allOrders = getOpenOrders();
+	$response = $response->withJson($allOrders);
 	return $response;
 });
 
