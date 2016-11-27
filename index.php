@@ -84,8 +84,12 @@ $app->get("/api/menu", function(Request $request, Response $response){
   echo(json_encode(getFoodItems()));
 });
 
-$app->get("/api/order", function(Request $request, Response $response){
+$app->get("/api/myorders", function(Request $request, Response $response){
   echo(json_encode(getOrderDetails($_SESSION["userid"])));
+});
+
+$app->get("/api/openorders", function(Request $request, Response $response){
+  echo(json_encode(getOpenOrders()));
 });
 
 // $app->get("/api/order/{id}", function(Request $request, Response $response){

@@ -109,7 +109,7 @@ app.controller('orderController', ['$scope', function($scope){
     $scope.orderIds = orderIds;
 
     $scope.$on('$routeChangeSuccess', function () {
-      $.get(base_url+"/order", function(res){
+      $.get(base_url+"/myorders", function(res){
         $scope.orderDetails = res;
         $scope.$apply();
         for (var i = 0; i < $scope.orderDetails.length; i++) {
@@ -122,6 +122,19 @@ app.controller('orderController', ['$scope', function($scope){
 
 app.controller('panelController', ['$scope', function($scope){
     console.log("Panel Controller Executed");
+
+    var orderDetails = []; // Holds array of items for each orderid
+    var orderIds = [];
+    $scope.orderDetails = orderDetails;
+    $scope.orderIds = orderIds;
+
+    $.get(base_url+"/openorders", function(res){
+      $scope.orderDetails = res;
+      $scope.$apply();
+      for (var i = 0; i < $scope.orderDetails.length; i++) {
+        $scope.orderIds.push($scope.orderDetails[i][0].order_id);
+      }
+    }, "json");
 }]);
 
 app.controller('dialogController', function ($scope, $mdDialog) {
