@@ -69,11 +69,23 @@ function getOrderId($customerid){
 // Gets details for a given order
 function getOrderDetails($customerid){
 	$res = getOrderId($customerid);
-	// return $res;
 	$orders = [];
 	foreach ($res as $orderid) {
 		$oID = $orderid["id"];
 		$sql = "SELECT i.order_id, f.name, i.quantity, f.size, f.price AS itemprice, f.price*i.quantity as totalprice FROM food_items f, order_items i, orders o WHERE i.order_id='$oID' AND i.order_id=o.id AND i.food_items_id=f.id;";
+		$orders[] = selectQuery($sql);
+	}
+	return $orders;
+}
+
+// Gets details for a given order
+function getOpenOrders(){
+	$sql = "SELECT id FROM orders WHERE status='open';";
+	$openOrdersId = selectQuery($sql);
+	$orders = [];
+	foreach ($openOrdersId as $orderid) {
+		$oID = $orderid["id"];
+		$sql = "SELECT i.order_id, o.date_created AS time, u.name AS custName, u.address, u.tel, f.name, i.quantity, f.size, f.price AS itemprice, f.price*i.quantity as totalprice FROM food_items f, order_items i, orders o, users u WHERE i.order_id='$oID' AND o.customer_id=u.id AND i.order_id=o.id AND i.food_items_id=f.id;";
 		$orders[] = selectQuery($sql);
 	}
 	return $orders;

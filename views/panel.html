@@ -1,25 +1,46 @@
 <div class="container">
   <div class="row" style="padding:8px">
-    <div class="col-sm-12 mdl-color--white mdl-shadow--2dp">
-      <h3>Active Orders</h3>
+    <div class="col-sm-12">
+      <h3>All Pending Orders</h3>
       <hr>
     </div>
-      <div class="col-sm-3 mdl-color--white mdl-shadow--2dp">
-        <h4>Order 101</h4>
+
+    <div ng-repeat="order in orderDetails" ng-class="{ 'row': ($index + 1) % 2 == 0 }" class="faded">
+      <div style="padding-bottom:15px;margin-top: 25px;" class="col-sm-4 col-sm-offset-1 mdl-color--white mdl-shadow--2dp">
+        <div class="row" style="padding-left:15px">
+          <h5 ng-repeat="o in order | unique:'order_id'">Order #{{o.order_id}}</h5>
+          <i class="material-icons" style="top:20px;right:15px;position:absolute;" ng-click="showMenu(o.order_id)">settings</i>
+        </div>
         <hr>
-      </div>
-      <div class="col-sm-3 mdl-color--white mdl-shadow--2dp">
-        <h4>Order 102</h4>
+        <p ng-repeat="o in order | unique:'order_id'">Customer Name: {{o.custName}}</p>
+        <p ng-repeat="o in order | unique:'order_id'">Address: {{o.address}}</p>
+        <p ng-repeat="o in order | unique:'order_id'">Telephone: {{o.tel}}</p>
+        <p ng-repeat="o in order | unique:'order_id'">Time: {{o.time}}</p>
+
         <hr>
+        <div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Size</th>
+                <th>Quantity</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="o in order">
+                <td>{{o.name}}</td>
+                <td>{{o.size}}</td>
+                <td>{{o.quantity}}</td>
+                <td>{{o.totalprice | currency:"$"}}</td>
+             </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="col-sm-3 mdl-color--white mdl-shadow--2dp">
-        <h4>Order 103</h4>
-        <hr>
-      </div>
-      <div class="col-sm-3 mdl-color--white mdl-shadow--2dp">
-        <h4>Order 104</h4>
-        <hr>
-      </div>
+    </div>
+
   </div>
 
   <div class="row" style="padding:8px">
