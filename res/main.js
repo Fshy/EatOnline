@@ -1,12 +1,11 @@
 "use strict";
-console.log("Loading main.js");
+console.log("[1] Attempting to load main.js");
 
 var base_url = "index.php/api";
 
 $(document).ready(function(){
-    console.log("Document Loaded");
+  console.log("[3] Document loaded successfully");
 });
-
 
 // Angular App
 var app = angular.module("eatonline", ['ngRoute', 'ngMaterial', 'ngAnimate', 'ui.unique']);
@@ -31,11 +30,11 @@ app.config(["$routeProvider",function($routeProvider) {
     });
 }]);
 
-app.controller('homeController', ['$scope', function($scope){
+app.controller('homeController', function($scope){
   // Stuff Maybe
-}]);
+});
 
-app.controller("menuController", ["$scope", "$window", function($scope, $window){
+app.controller("menuController", function($scope, $window){
     function orderItem (id, name, size, quantity, price) {
       this.id = id;
       this.name = name;
@@ -99,9 +98,9 @@ app.controller("menuController", ["$scope", "$window", function($scope, $window)
       $scope.newOrder.splice(index, 1);
       parent.total -= o.price;
     };
-}]);
+});
 
-app.controller('orderController', ['$scope', function($scope){
+app.controller('orderController', function($scope){
     var orderDetails = []; // Holds array of items for each orderid
     var orderIds = [];
     $scope.orderDetails = orderDetails;
@@ -117,22 +116,72 @@ app.controller('orderController', ['$scope', function($scope){
       }, "json");
     });
 
-}]);
+});
 
-app.controller('panelController', ['$scope', function($scope){
+app.controller('panelController', function($route, $scope, $mdDialog){
     var orderDetails = []; // Holds array of items for each orderid
     var orderIds = [];
     $scope.orderDetails = orderDetails;
     $scope.orderIds = orderIds;
 
-    $.get(base_url+"/openorders", function(res){
-      $scope.orderDetails = res;
-      $scope.$apply();
-      for (var i = 0; i < $scope.orderDetails.length; i++) {
-        $scope.orderIds.push($scope.orderDetails[i][0].order_id);
-      }
-    }, "json");
-}]);
+    $scope.$on('$routeChangeSuccess', function () {
+      $.get(base_url+"/openorders", function(res){
+        $scope.orderDetails = res;
+        $scope.$apply();
+        for (var i = 0; i < $scope.orderDetails.length; i++) {
+          $scope.orderIds.push($scope.orderDetails[i][0].order_id);
+        }
+      }, "json");
+    });
+
+    // Handles Dropdown Menus
+    var originatorEv;
+
+    $scope.openMenu = function($mdOpenMenu, ev) {
+      originatorEv = ev;
+      $mdOpenMenu(ev);
+    };
+
+    $scope.orderDeliver = function(order_id){
+      swal({
+        type: "warning",
+        title: "Are you sure?",
+        text: "Mark Order #"+order_id+" as delivered?",
+        showCancelButton: true,
+        closeOnConfirm: false,
+        confirmButtonColor: "#95AAB5",
+        allowOutsideClick: true
+      },
+      function(){
+        $.post(base_url+"/deliver/"+order_id, function(res){
+          swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5", allowOutsideClick: true}, function(){
+            $route.reload();
+          });
+        });
+      });
+      originatorEv = null;
+    };
+
+    $scope.orderCancel = function(order_id){
+      swal({
+        type: "warning",
+        title: "Are you sure?",
+        text: "Cancel Order #"+order_id+"?",
+        showCancelButton: true,
+        closeOnConfirm: false,
+        confirmButtonColor: "#95AAB5",
+        allowOutsideClick: true
+      },
+      function(){
+        $.post(base_url+"/cancel/"+order_id, function(res){
+          swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5", allowOutsideClick: true}, function(){
+            $route.reload();
+          });
+        });
+      });
+      originatorEv = null;
+    };
+});
 
 app.controller('dialogController', function ($scope, $mdDialog) {
   $scope.login = function(event) {
@@ -214,4 +263,4 @@ function logout(){
     });
 }
 
-console.log("JavaScript file was successfully loaded in the page");
+console.log("[2] main.js loaded successfully");

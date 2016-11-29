@@ -7,9 +7,17 @@
 
     <div ng-repeat="order in orderDetails" ng-class="{ 'row': ($index + 1) % 2 == 0 }" class="faded">
       <div style="padding-bottom:15px;margin-top: 25px;" class="col-sm-4 col-sm-offset-1 mdl-color--white mdl-shadow--2dp">
-        <div class="row" style="padding-left:15px">
+        <div class="row" style="padding-left:15px" ng-controller="panelController">
           <h5 ng-repeat="o in order | unique:'order_id'">Order #{{o.order_id}}</h5>
-          <i class="material-icons" style="top:20px;right:15px;position:absolute;" ng-click="showMenu(o.order_id)">settings</i>
+          <md-menu md-position-mode="target-right target" ng-repeat="o in order | unique:'order_id'">
+            <md-button ng-click="openMenu($mdOpenMenu, $event)" style="top:20px;right:15px;position:absolute;" class="md-icon-button" aria-label="Open settings">
+              <i class="material-icons">settings</i>
+            </md-button>
+            <md-menu-content>
+              <md-menu-item><md-button ng-click="orderDeliver(o.order_id)"><i class="fa fa-truck" aria-hidden="true"></i> Mark as Delivered</md-button></md-menu-item>
+              <md-menu-item><md-button ng-click="orderCancel(o.order_id)"><i class="fa fa-ban" aria-hidden="true"></i> Cancel Order</md-button></md-menu-item>
+            </md-menu-content>
+          </md-menu>
         </div>
         <hr>
 

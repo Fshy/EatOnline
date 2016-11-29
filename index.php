@@ -111,33 +111,49 @@ $app->get("/api/openorders", function(Request $request, Response $response){
 });
 
 
-$app->get("/api/products/{id}", function(Request $request, Response $response){
-	$val = $request->getAttribute('id');
-	// Get Record for Specific Country
-	$rec = getProduct($val);
-	if ($rec != null)
-		$response = $response->withJson($rec);
-	else
-		$response = $response->withStatus(404);
+$app->post("/api/deliver/{id}", function(Request $request, Response $response){
+	$orderid = $request->getAttribute('id');
+	$post = $request->getParsedBody();
+  if (isset($_SESSION["role"])){
+		if ($_SESSION["role"] == 'employee' || $_SESSION["role"] == 'dev') {
+			if ($res = deliverOrder($orderid)){//success
+	      $msg = array("status"=>"success", "message"=>"Order #$orderid. marked as delivered");
+				$response = $response->withJson($msg);
+	    }else {
+				$msg = array("status"=>"error", "message"=>"Could not update order");
+				$response = $response->withJson($msg);
+	    }
+		}else{
+			$msg = array("status"=>"error", "message"=>"Elevated User Access Required");
+			$response = $response->withJson($msg);
+		}
+  }else {
+		$msg = array("status"=>"error", "message"=>"User not logged in");
+		$response = $response->withJson($msg);
+  }
 	return $response;
 });
 
-
-
-$app->post("/api/products", function(Request $request, Response $response){
+$app->post("/api/cancel/{id}", function(Request $request, Response $response){
+	$orderid = $request->getAttribute('id');
 	$post = $request->getParsedBody();
-	$name = $post['name'];
-	$price = $post['price'];
-	$countryId = $post['country'];
-	// print "Name: $name, Price:$price, Country: $countryId";
-	$res = saveProduct($name, $price, $countryId);
-	// print ($res);
-	if ($res > 0){
-		$response = $response->withStatus(201);
-		$response = $response->withJson(array( "id" => $res));
-	} else {
-		$response = $response->withStatus(400);
-	}
+  if (isset($_SESSION["role"])){
+		if ($_SESSION["role"] == 'employee' || $_SESSION["role"] == 'dev') {
+			if ($res = cancelOrder($orderid)){//success
+	      $msg = array("status"=>"success", "message"=>"Order #$orderid. has been cancelled");
+				$response = $response->withJson($msg);
+	    }else {
+				$msg = array("status"=>"error", "message"=>"Could not update order");
+				$response = $response->withJson($msg);
+	    }
+		}else{
+			$msg = array("status"=>"error", "message"=>"Elevated User Access Required");
+			$response = $response->withJson($msg);
+		}
+  }else {
+		$msg = array("status"=>"error", "message"=>"User not logged in");
+		$response = $response->withJson($msg);
+  }
 	return $response;
 });
 
