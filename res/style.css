@@ -333,3 +333,7 @@ _:-ms-input-placeholder, :root .demo-graph {
   border-top-color:  #95AAB5;
   border-left-color: #95AAB5;
 }
+
+a {
+  color: #1C77A5;
+}

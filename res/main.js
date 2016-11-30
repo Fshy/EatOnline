@@ -187,35 +187,43 @@ app.controller('panelController', function($route, $scope, $http, $mdDialog){
 
 app.controller('statsController', function($scope, $http){
 
-  // Frequency bar graph of all food items
-  var ctx = $('#myChart');
-  var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ["Fried Rice", "White Rice", "Chicken Chow Mein", "Egg Roll", "Spring Roll", "Sweet and Sour Chicken", "Wonton Soup"],
-      datasets:[{
-        label: "Popularity  of Food Items",
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 1,
-        data: [65, 59, 80, 81, 56, 55, 40],
-    }]
-    }
-  });
+  var ctx = $('#popChart');
+  var orderStats = []; // Holds array of items for each orderid
+  var osName = [];
+  var osData = [];
+  var osColor = [];
+
+  $scope.load = $http.get(base_url+"/orderstats")
+                  .then(function(res){
+                    orderStats = res;
+                  }).then(function(){
+                    for (var i = 0; i < orderStats.data.length; i++) {
+                      osName.push(orderStats.data[i].name);
+                      osData.push(orderStats.data[i].qtyOrdered);
+                      osColor.push('#37474f');
+                    }
+
+                    var myChart = new Chart(ctx, {
+                      type: 'bar',
+                      data: {
+                        labels: osName,
+                        datasets:[{
+                          label: "Popularity  of Food Items",
+                          backgroundColor: osColor,
+                          borderColor: osColor,
+                          borderWidth: 1,
+                          data: osData
+                      }]
+                      },
+                      options: {
+                        scales: {
+                          xAxes: [{
+                            barThickness: 75
+                          }]
+                        }
+                      }
+                    });
+                  });
 
 });
 

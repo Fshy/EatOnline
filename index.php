@@ -110,6 +110,11 @@ $app->get("/api/openorders", function(Request $request, Response $response){
 	return $response;
 });
 
+$app->get("/api/orderstats", function(Request $request, Response $response){
+  $stats = getOrdersFrequency();
+	$response = $response->withJson($stats);
+	return $response;
+});
 
 $app->post("/api/deliver/{id}", function(Request $request, Response $response){
 	$orderid = $request->getAttribute('id');

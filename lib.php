@@ -64,6 +64,12 @@ function getOrderId($customerid){
 	return selectQuery($sql);
 }
 
+// Given name of food item return the options for size and price
+function getOrdersFrequency(){
+	$sql = "SELECT f.name, SUM(i.quantity) AS qtyOrdered FROM order_items i, food_items f WHERE f.id = i.food_items_id GROUP BY f.name;";
+	return selectQuery($sql);
+}
+
 // Gets details for a given order
 function getOrderDetails($customerid){
 	$res = getOrderId($customerid);
