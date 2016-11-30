@@ -1,8 +1,9 @@
 <div class="container">
   <div class="row" style="padding:8px">
     <div class="col-sm-12">
-      <h3>All Pending Orders</h3>
+      <h3>Pending Customer Orders</h3>
       <hr>
+      <div cg-busy="{promise:load,backdrop:false,templateUrl:'views/loading.html'}"></div>
     </div>
 
     <div ng-repeat="order in orderDetails" ng-class="{ 'row': ($index + 1) % 2 == 0 }" class="faded">
@@ -56,12 +57,5 @@
       </div>
     </div>
 
-  </div>
-
-  <div class="row" style="padding:8px">
-    <div class="col-sm-12">
-      <h3>Data Visualization</h3>
-      <hr>
-    </div>
   </div>
 </div>

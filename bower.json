@@ -26,6 +26,8 @@
     "ng-dialog": "^0.6.4",
     "angular-material": "^1.1.1",
     "angular-animate": "^1.5.9",
-    "angular-ui-unique": "angular-ui-utils#bower-unique"
+    "angular-ui-unique": "angular-ui-utils#bower-unique",
+    "angular-loading-bar": "^0.9.0",
+    "angular-busy": "^4.1.3"
   }
 }

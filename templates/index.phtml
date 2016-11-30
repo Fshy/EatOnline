@@ -4,12 +4,13 @@
     <meta charset="utf-8">
     <title>Eat Online</title>
 		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <!-- <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css"> -->
 		<link rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.min.css">
 		<link rel="stylesheet" href="bower_components/sweetalert/dist/sweetalert.css">
     <link rel="stylesheet" href="bower_components/material-design-lite/material.min.css">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" href="bower_components/angular-loading-bar/src/loading-bar.css">
+    <link rel="stylesheet" href="bower_components/angular-busy/dist/angular-busy.min.css">
 		<link rel="stylesheet" href="res/style.css">
   </head>
   <body ng-app="eatonline">
@@ -40,7 +41,8 @@
             <a class="mdl-navigation__link" href="#orders"><i class="material-icons">local_offer</i>My Orders</a>
 					{% endif %}
           {% if (session.role == 'employee') or (session.role == 'dev') %}
-            <a class="mdl-navigation__link" href="#panel"><i class="material-icons">insert_chart</i>Employee Panel</a>
+            <a class="mdl-navigation__link" href="#panel"><i class="material-icons">receipt</i>Employee Panel</a>
+            <a class="mdl-navigation__link" href="#stats"><i class="material-icons">insert_chart</i>Statistics</a>
           {% endif %}
         </nav>
       </div>
@@ -61,6 +63,9 @@
     <script src="bower_components/angular-material/angular-material.js"></script>
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="bower_components/angular-ui-unique/unique.min.js"></script>
+    <script src="bower_components/angular-loading-bar/src/loading-bar.js"></script>
+    <script src="bower_components/angular-busy/dist/angular-busy.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.js"></script>
 		<script src="res/main.js"></script>
 	</body>
 </html>

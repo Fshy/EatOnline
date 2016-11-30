@@ -13,6 +13,7 @@
             <th class="mdl-data-table__cell--non-numeric"></th>
           </tr>
         </thead>
+        <div cg-busy="{promise:load,backdrop:false,templateUrl:'views/loading.html'}"></div>
         <tbody>
             <tr ng-repeat="item in menu track by $index" class="slide">
               <td class="mdl-data-table__cell--non-numeric"><img ng-src="{{item.imgUrl}}" alt="" height="200px" width="200px"></td>

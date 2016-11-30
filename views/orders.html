@@ -3,6 +3,7 @@
     <div class="col-sm-12"  style="padding-bottom:35px">
       <h3>My Pending Orders</h3>
       <hr>
+      <div cg-busy="{promise:load,backdrop:false,templateUrl:'views/loading.html'}"></div>
       <div ng-repeat="order in orderDetails" ng-class="{ 'row': ($index + 1) % 2 == 0 }" class="faded">
         <div style="padding-bottom:15px;margin-top: 25px;" class="col-sm-4 col-sm-offset-1 mdl-color--white mdl-shadow--2dp">
           <h5 ng-repeat="o in order | unique:'order_id'">Order #{{o.order_id}}</h5>

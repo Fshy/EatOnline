@@ -317,3 +317,19 @@ _:-ms-input-placeholder, :root .demo-graph {
   /*height: 0px;*/
   color: red;
 } /* terminal animations for leave */
+
+#loading-bar .bar{
+  background-color: #95AAB5;
+}
+
+#loading-bar .peg {
+  -moz-box-shadow: #95AAB5 1px 0 6px 1px;
+  -ms-box-shadow: #95AAB5 1px 0 6px 1px;
+  -webkit-box-shadow: #95AAB5 1px 0 6px 1px;
+  box-shadow: #95AAB5 1px 0 6px 1px;
+}
+
+#loading-bar-spinner .spinner-icon {
+  border-top-color:  #95AAB5;
+  border-left-color: #95AAB5;
+}

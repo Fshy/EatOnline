@@ -8,7 +8,7 @@ $(document).ready(function(){
 });
 
 // Angular App
-var app = angular.module("eatonline", ['ngRoute', 'ngMaterial', 'ngAnimate', 'ui.unique']);
+var app = angular.module("eatonline", ['ngRoute', 'ngMaterial', 'ngAnimate', 'ui.unique', 'angular-loading-bar', 'cgBusy']);
 
 app.config(["$routeProvider",function($routeProvider) {
   $routeProvider
@@ -27,6 +27,10 @@ app.config(["$routeProvider",function($routeProvider) {
     .when("/panel", {
       templateUrl : "views/panel.html",
       controller: "panelController"
+    })
+    .when("/stats", {
+      templateUrl : "views/stats.html",
+      controller: "statsController"
     });
 }]);
 
@@ -34,7 +38,7 @@ app.controller('homeController', function($scope){
   // Stuff Maybe
 });
 
-app.controller("menuController", function($scope, $window){
+app.controller("menuController", function($scope, $window, $http){
     function orderItem (id, name, size, quantity, price) {
       this.id = id;
       this.name = name;
@@ -46,10 +50,10 @@ app.controller("menuController", function($scope, $window){
     var newOrder = [];
     $scope.newOrder = newOrder;
 
-    $.get(base_url+"/menu", function(res){
+    $scope.load = $http.get(base_url+"/menu")
+      .success(function(res){
         $scope.menu = res;
-        $scope.$apply();
-    }, "json");
+      });
 
     $scope.addToOrder = function(id, name, size, price) {
       swal({
@@ -100,39 +104,35 @@ app.controller("menuController", function($scope, $window){
     };
 });
 
-app.controller('orderController', function($scope){
+app.controller('orderController', function($scope, $http){
     var orderDetails = []; // Holds array of items for each orderid
     var orderIds = [];
     $scope.orderDetails = orderDetails;
     $scope.orderIds = orderIds;
 
-    $scope.$on('$routeChangeSuccess', function () {
-      $.get(base_url+"/myorders", function(res){
-        $scope.orderDetails = res;
-        $scope.$apply();
-        for (var i = 0; i < $scope.orderDetails.length; i++) {
-          $scope.orderIds.push($scope.orderDetails[i][0].order_id);
-        }
-      }, "json");
-    });
+    $scope.load = $http.get(base_url+"/myorders")
+                    .success(function(res){
+                      $scope.orderDetails = res;
+                      for (var i = 0; i < $scope.orderDetails.length; i++) {
+                        $scope.orderIds.push($scope.orderDetails[i][0].order_id);
+                      }
+                    });
 
 });
 
-app.controller('panelController', function($route, $scope, $mdDialog){
+app.controller('panelController', function($route, $scope, $http, $mdDialog){
     var orderDetails = []; // Holds array of items for each orderid
     var orderIds = [];
     $scope.orderDetails = orderDetails;
     $scope.orderIds = orderIds;
 
-    $scope.$on('$routeChangeSuccess', function () {
-      $.get(base_url+"/openorders", function(res){
-        $scope.orderDetails = res;
-        $scope.$apply();
-        for (var i = 0; i < $scope.orderDetails.length; i++) {
-          $scope.orderIds.push($scope.orderDetails[i][0].order_id);
-        }
-      }, "json");
-    });
+    $scope.load = $http.get(base_url+"/openorders")
+                    .success(function(res){
+                      $scope.orderDetails = res;
+                      for (var i = 0; i < $scope.orderDetails.length; i++) {
+                        $scope.orderIds.push($scope.orderDetails[i][0].order_id);
+                      }
+                    });
 
     // Handles Dropdown Menus
     var originatorEv;
@@ -153,11 +153,12 @@ app.controller('panelController', function($route, $scope, $mdDialog){
         allowOutsideClick: true
       },
       function(){
-        $.post(base_url+"/deliver/"+order_id, function(res){
-          swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5", allowOutsideClick: true}, function(){
-            $route.reload();
+        $http.post(base_url+"/deliver/"+order_id)
+          .success(function(res){
+            swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5", allowOutsideClick: true}, function(){
+              $route.reload();
+            });
           });
-        });
       });
       originatorEv = null;
     };
@@ -173,14 +174,49 @@ app.controller('panelController', function($route, $scope, $mdDialog){
         allowOutsideClick: true
       },
       function(){
-        $.post(base_url+"/cancel/"+order_id, function(res){
-          swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5", allowOutsideClick: true}, function(){
-            $route.reload();
+        $http.post(base_url+"/cancel/"+order_id)
+          .success(function(res){
+            swal({title:"", text:res.message, type:res.status, confirmButtonColor: "#95AAB5", allowOutsideClick: true}, function(){
+              $route.reload();
+            });
           });
-        });
       });
       originatorEv = null;
     };
+});
+
+app.controller('statsController', function($scope, $http){
+
+  // Frequency bar graph of all food items
+  var ctx = $('#myChart');
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ["Fried Rice", "White Rice", "Chicken Chow Mein", "Egg Roll", "Spring Roll", "Sweet and Sour Chicken", "Wonton Soup"],
+      datasets:[{
+        label: "Popularity  of Food Items",
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1,
+        data: [65, 59, 80, 81, 56, 55, 40],
+    }]
+    }
+  });
+
 });
 
 app.controller('dialogController', function ($scope, $mdDialog) {
