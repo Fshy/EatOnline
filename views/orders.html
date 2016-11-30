@@ -4,9 +4,9 @@
       <h3>My Pending Orders</h3>
       <hr>
       <div cg-busy="{promise:load,backdrop:false,templateUrl:'views/loading.html'}"></div>
-      <div ng-repeat="order in orderDetails" ng-class="{ 'row': ($index + 1) % 2 == 0 }" class="faded">
+      <div ng-repeat="order in orderDetails track by $index" ng-class="{ 'row': ($index + 1) % 2 == 0 }" class="faded">
         <div style="padding-bottom:15px;margin-top: 25px;" class="col-sm-4 col-sm-offset-1 mdl-color--white mdl-shadow--2dp">
-          <h5 ng-repeat="o in order | unique:'order_id'">Order #{{o.order_id}}</h5>
+          <h5 ng-repeat="o in order  | unique:'order_id'">Order #{{o.order_id}}</h5>
           <hr>
           <div>
             <table class="table">
@@ -18,15 +18,17 @@
                   <th>Total</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody ng-init="total = 0">
                 <tr ng-repeat="o in order">
                   <td>{{o.name}}</td>
                   <td>{{o.size}}</td>
                   <td>{{o.quantity}}</td>
-                  <td>{{o.totalprice | currency:"$"}}</td>
+                  <td ng-init="$parent.total = $parent.total + o.totalprice">{{o.totalprice | currency:"$"}}</td>
                </tr>
               </tbody>
             </table>
+            <hr>
+            <strong><span>Order Total:</span><span style="float:right;"> {{orderTotals[$index] | currency:"$"}}</span></strong>
           </div>
         </div>
       </div>

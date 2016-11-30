@@ -107,14 +107,22 @@ app.controller("menuController", function($scope, $window, $http){
 app.controller('orderController', function($scope, $http){
     var orderDetails = []; // Holds array of items for each orderid
     var orderIds = [];
+    var orderTotals = [];
+    var tempTotal = 0;
     $scope.orderDetails = orderDetails;
     $scope.orderIds = orderIds;
+    $scope.orderTotals = orderTotals;
 
     $scope.load = $http.get(base_url+"/myorders")
                     .success(function(res){
                       $scope.orderDetails = res;
                       for (var i = 0; i < $scope.orderDetails.length; i++) {
                         $scope.orderIds.push($scope.orderDetails[i][0].order_id);
+                        for (var x = 0; x < $scope.orderDetails[i].length; x++) {
+                          tempTotal += parseFloat($scope.orderDetails[i][x].totalprice);
+                        }
+                        $scope.orderTotals.push(tempTotal);
+                        tempTotal = 0;
                       }
                     });
 
@@ -123,14 +131,22 @@ app.controller('orderController', function($scope, $http){
 app.controller('panelController', function($route, $scope, $http, $mdDialog){
     var orderDetails = []; // Holds array of items for each orderid
     var orderIds = [];
+    var orderTotals = [];
+    var tempTotal = 0;
     $scope.orderDetails = orderDetails;
     $scope.orderIds = orderIds;
+    $scope.orderTotals = orderTotals;
 
     $scope.load = $http.get(base_url+"/openorders")
                     .success(function(res){
                       $scope.orderDetails = res;
                       for (var i = 0; i < $scope.orderDetails.length; i++) {
                         $scope.orderIds.push($scope.orderDetails[i][0].order_id);
+                        for (var x = 0; x < $scope.orderDetails[i].length; x++) {
+                          tempTotal += parseFloat($scope.orderDetails[i][x].totalprice);
+                        }
+                        $scope.orderTotals.push(tempTotal);
+                        tempTotal = 0;
                       }
                     });
 

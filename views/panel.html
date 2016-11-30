@@ -6,7 +6,7 @@
       <div cg-busy="{promise:load,backdrop:false,templateUrl:'views/loading.html'}"></div>
     </div>
 
-    <div ng-repeat="order in orderDetails" ng-class="{ 'row': ($index + 1) % 2 == 0 }" class="faded">
+    <div ng-repeat="order in orderDetails track by $index" ng-class="{ 'row': ($index + 1) % 2 == 0 }" class="faded">
       <div style="padding-bottom:15px;margin-top: 25px;" class="col-sm-4 col-sm-offset-1 mdl-color--white mdl-shadow--2dp">
         <div class="row" style="padding-left:15px" ng-controller="panelController">
           <h5 ng-repeat="o in order | unique:'order_id'">Order #{{o.order_id}}</h5>
@@ -51,8 +51,11 @@
                 <td>{{o.quantity}}</td>
                 <td>{{o.totalprice | currency:"$"}}</td>
              </tr>
+
             </tbody>
           </table>
+          <hr>
+          <strong><span>Order Total:</span><span style="float:right;"> {{orderTotals[$index] | currency:"$"}}</span></strong>
         </div>
       </div>
     </div>
