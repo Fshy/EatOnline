@@ -5,11 +5,10 @@ session_start();
 function getDBConnection(){
 	try{
 		// $db = new mysqli("localhost","eatonline_user","eE7DHMpuLF5r8J3L","eatonline"); // Development
-		$db = new mysqli("149.56.132.122","fshy","eE7DHMpuLF5r8J3L!","fshy_db", 3306); // Production
+		$db = new mysqli("192.155.91.82","fshy","eE7DHMpuLF5r8J3L","eat_online", 3306); // Production
 		if ($db == null && $db->connect_errno > 0)return null;
 		return $db;
 	}catch(Exception $e){echo $e;}
-
 }
 
 // Generic Function - returns an array of objects from select query
